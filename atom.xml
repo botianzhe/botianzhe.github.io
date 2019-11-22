@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://botianzhe.github.io</id>
     <title>DeepFake_Detection</title>
-    <updated>2019-11-22T14:43:49.002Z</updated>
+    <updated>2019-11-22T14:46:11.320Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://botianzhe.github.io"/>
     <link rel="self" href="https://botianzhe.github.io/atom.xml"/>
@@ -10,6 +10,55 @@
     <logo>https://botianzhe.github.io/images/avatar.png</logo>
     <icon>https://botianzhe.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, DeepFake_Detection</rights>
+    <entry>
+        <title type="html"><![CDATA[视频帧提取]]></title>
+        <id>https://botianzhe.github.io/post/shi-pin-zheng-ti-qu</id>
+        <link href="https://botianzhe.github.io/post/shi-pin-zheng-ti-qu">
+        </link>
+        <updated>2019-11-22T14:45:42.000Z</updated>
+        <content type="html"><![CDATA[<pre><code># exrtactframes.py
+import cv2
+import os
+import random
+import sys
+
+# f=int(sys.argv[1])
+videopath=&quot;/data_ssd/FaceForensic++/DeepFakeDetection/&quot;
+target_img_path=&quot;/data_ssd/FaceForensic++/DeepFakeDetection_img/&quot;
+def extractframes(path,filename,dst):
+    capture=cv2.VideoCapture(path)
+    cap=capture.get(cv2.CAP_PROP_FRAME_COUNT)
+    i=0
+    # if not os.path.exists(dst+filename):
+    #     os.makedirs(dst+filename)
+    while(True):
+        ret, frame = capture.read()
+        if ret is False:
+            print(&quot;end&quot;)
+            break
+        # print(dst+filename+&quot;/&quot;+filename+&quot;_&quot;+str(i)+&quot;.jpg&quot;)
+        cv2.imwrite(dst+filename+&quot;/&quot;+filename+&quot;_&quot;+str(i)+&quot;.jpg&quot;,frame)
+        
+        i=i+1
+    capture.release()
+
+if __name__ == &quot;__main__&quot;:
+    for dataset in ['train','test','val']:
+        for category in ['original','deepfake']:
+            for video in os.listdir(videopath+dataset+'/'+category):
+                filename=video[:-4]
+                path=videopath+dataset+'/'+category+&quot;/&quot;+video
+                print(path)
+                tpath=target_img_path+dataset+'/'+category+&quot;/&quot;
+                if not os.path.exists(tpath+filename):
+                    os.makedirs(tpath+filename)
+                extractframes(path,filename,tpath)
+            print(category,&quot;finished&quot;)
+    print(&quot;finish&quot;)
+
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[视频人脸裁剪（固定位置）]]></title>
         <id>https://botianzhe.github.io/post/shi-pin-ren-lian-cai-jian-gu-ding-wei-zhi</id>

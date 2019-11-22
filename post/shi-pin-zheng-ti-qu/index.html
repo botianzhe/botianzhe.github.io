@@ -1,8 +1,8 @@
 <html>
   <head>
-  <meta charset="utf-8" />
+    <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>人脸裁剪 | DeepFake_Detection</title>
+<title>视频帧提取 | DeepFake_Detection</title>
 <meta name="description" content="DFDC" />
 <link rel="shortcut icon" href="https://botianzhe.github.io/favicon.ico?v=1574433967633">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
@@ -76,42 +76,85 @@
   </div>
 </div>
 
-        <div class="current-tag-container">
-            <h2 class="title">
-                标签：# 人脸裁剪
-            </h2> 
-        </div>
-        <div class="post-container">
-  
-    <article class="post">
-      <a href="https://botianzhe.github.io/post/shi-pin-ren-lian-cai-jian-gu-ding-wei-zhi">
-        <h2 class="post-title">视频人脸裁剪（固定位置）</h2>
-      </a>
-      <div class="post-info">
-        <span>
-          2019-11-22
-        </span>
-        <span>
-          3 min read
-        </span>
-        
-          <a href="https://botianzhe.github.io/tag/KE0rRhhBM" class="post-tag">
-            # 人脸裁剪
-          </a>
-        
-      </div>
-      
-      <div class="post-abstract">
-        
-      </div>
-    </article>
-  
-</div>
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              视频帧提取
+            </h2>
+            <div class="post-info">
+              <span>
+                2019-11-22
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <pre><code># exrtactframes.py
+import cv2
+import os
+import random
+import sys
 
-        <div class="pagination-container">
-  
-  
-</div>
+# f=int(sys.argv[1])
+videopath=&quot;/data_ssd/FaceForensic++/DeepFakeDetection/&quot;
+target_img_path=&quot;/data_ssd/FaceForensic++/DeepFakeDetection_img/&quot;
+def extractframes(path,filename,dst):
+    capture=cv2.VideoCapture(path)
+    cap=capture.get(cv2.CAP_PROP_FRAME_COUNT)
+    i=0
+    # if not os.path.exists(dst+filename):
+    #     os.makedirs(dst+filename)
+    while(True):
+        ret, frame = capture.read()
+        if ret is False:
+            print(&quot;end&quot;)
+            break
+        # print(dst+filename+&quot;/&quot;+filename+&quot;_&quot;+str(i)+&quot;.jpg&quot;)
+        cv2.imwrite(dst+filename+&quot;/&quot;+filename+&quot;_&quot;+str(i)+&quot;.jpg&quot;,frame)
+        
+        i=i+1
+    capture.release()
+
+if __name__ == &quot;__main__&quot;:
+    for dataset in ['train','test','val']:
+        for category in ['original','deepfake']:
+            for video in os.listdir(videopath+dataset+'/'+category):
+                filename=video[:-4]
+                path=videopath+dataset+'/'+category+&quot;/&quot;+video
+                print(path)
+                tpath=target_img_path+dataset+'/'+category+&quot;/&quot;
+                if not os.path.exists(tpath+filename):
+                    os.makedirs(tpath+filename)
+                extractframes(path,filename,tpath)
+            print(category,&quot;finished&quot;)
+    print(&quot;finish&quot;)
+
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://botianzhe.github.io/post/shi-pin-ren-lian-cai-jian-gu-ding-wei-zhi">
+              <h3 class="post-title">
+                视频人脸裁剪（固定位置）
+              </h3>
+            </a>
+          </div>
+        
+
+        
 
         <div class="site-footer">
   Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
