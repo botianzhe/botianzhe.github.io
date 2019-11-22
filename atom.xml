@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://botianzhe.github.io</id>
     <title>DeepFake_Detection</title>
-    <updated>2019-11-22T14:23:42.524Z</updated>
+    <updated>2019-11-22T14:26:57.572Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://botianzhe.github.io"/>
     <link rel="self" href="https://botianzhe.github.io/atom.xml"/>
@@ -10,6 +10,100 @@
     <logo>https://botianzhe.github.io/images/avatar.png</logo>
     <icon>https://botianzhe.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, DeepFake_Detection</rights>
+    <entry>
+        <title type="html"><![CDATA[视频人脸裁剪（固定位置）]]></title>
+        <id>https://botianzhe.github.io/post/shi-pin-ren-lian-cai-jian-gu-ding-wei-zhi</id>
+        <link href="https://botianzhe.github.io/post/shi-pin-ren-lian-cai-jian-gu-ding-wei-zhi">
+        </link>
+        <updated>2019-11-22T14:25:55.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="crpoface_improvepy">crpoface_improve.py</h1>
+<h1 id="cropfacepy">cropface.py</h1>
+<p>import os,sys<br>
+import cv2<br>
+import dlib<br>
+import numpy as np<br>
+import shutil<br>
+IMAGE_SIZE=224</p>
+<p>detector = dlib.get_frontal_face_detector()<br>
+def cropface(path_read,dst_path):<br>
+id=0<br>
+print(path_read)<br>
+startx=0<br>
+starty=0<br>
+for file_name in os.listdir(path_read):<br>
+id=id+1<br>
+#aa是图片的全路径<br>
+aa=path_read+file_name<br>
+#读入的图片的路径中含非英文<br>
+img=cv2.imdecode(np.fromfile(aa, dtype=np.uint8), cv2.IMREAD_UNCHANGED)<br>
+#获取图片的宽高<br>
+img_shape=img.shape<br>
+img_height=img_shape[0]<br>
+img_width=img_shape[1]</p>
+<pre><code>    # dlib检测
+    dets = detector(img,1)
+    # print(&quot;人脸数：&quot;, len(dets))
+    if len(dets)==0:
+        # print(file_name)
+        continue
+    if len(dets)&gt;1:
+        print(aa)
+    max_area=0
+
+    for faceid in range(len(dets)):
+        d=dets[faceid]
+        # 计算矩形大小
+        # (x,y), (宽度width, 高度height)
+        pos_start = tuple([d.left(), d.top()])
+        pos_end = tuple([d.right(), d.bottom()])
+
+        # 计算矩形框大小
+        height = d.bottom()-d.top()
+        width = d.right()-d.left()
+        area=height*width
+        if area &gt; max_area:
+            max_area=area
+            centerx=int((d.bottom()+d.top())/2)
+            centery=int((d.right()+d.left())/2)
+            startx=centerx-IMAGE_SIZE//2
+            starty=centery-IMAGE_SIZE//2
+            if startx&lt;0:
+                startx=0
+            elif startx+IMAGE_SIZE&gt;img_height:
+                startx=img_height-IMAGE_SIZE
+            if starty&lt;0:
+                starty=0
+            elif starty+IMAGE_SIZE&gt;img_width:
+                starty=img_width-IMAGE_SIZE
+    break
+fileid=0
+for file_name in os.listdir(path_read):
+    # print(fileid)
+    fileid+=1
+    #aa是图片的全路径
+    aa=path_read+file_name
+    #读入的图片的路径中含非英文
+    img=cv2.imdecode(np.fromfile(aa, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
+    img_blank=img[startx:startx+IMAGE_SIZE,starty:starty+IMAGE_SIZE,:]
+    cv2.imencode('.jpg', img_blank)[1].tofile(dst_path+file_name) # 正确方法
+</code></pre>
+<p>i=0<br>
+path='/data_ssd/FaceForensic++/DeepFakeDetection_img/'<br>
+target='/data_ssd/FaceForensic++/DeepFakeDetection_img_crop224/'<br>
+need=[]<br>
+for filepath in os.listdir(path):<br>
+for c in os.listdir(path+filepath):<br>
+d=os.listdir(path+filepath+'/'+c)<br>
+print(len(d))<br>
+for imgfolder in os.listdir(path+filepath+'/'+c):<br>
+if not os.path.exists(target+filepath+'/'+c+'/'+imgfolder):<br>
+os.makedirs(target+filepath+'/'+c+'/'+imgfolder)<br>
+tpath=path+filepath+'/'+c+'/'+imgfolder+'/'<br>
+targetpath=target+filepath+'/'+c+'/'+imgfolder+'/'<br>
+cropface(tpath,targetpath)<br>
+print(imgfolder+'finished')</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[deepfake检测]]></title>
         <id>https://botianzhe.github.io/post/deepfake-jian-ce</id>
